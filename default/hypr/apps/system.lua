@@ -17,7 +17,7 @@ o.window("org.omarchy.omarchy-ai-chat", {
 o.window("org.omarchy.screensaver", { fullscreen = true, float = true, animation = "slide" })
 
 -- Media/image/video apps should be opaque.
-o.window("^(zoom|vlc|mpv|org.kde.kdenlive|com.obsproject.Studio|com.github.PintaProject.Pinta|imv|org.gnome.NautilusPreviewer)$", { tag = "-default-opacity", opacity = "1 1" })
+o.window("^(zoom|vlc|mpv|com.github.PintaProject.Pinta|imv|org.gnome.NautilusPreviewer)$", { tag = "-default-opacity", opacity = "1 1" })
 
 -- Common app-controlled tags.
 o.window({ tag = "pop" }, { rounding = 8 })

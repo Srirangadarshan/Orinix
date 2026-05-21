@@ -1,8 +1,6 @@
 # Omarchy core package list installed via install/packaging/base.sh
 # This file is also used by the ISO builder when determining needs
 
-1password-beta
-1password-cli
 aether
 alsa-utils
 asdcontrol
@@ -15,7 +13,6 @@ brightnessctl
 btop
 chromium
 clang
-claude-code
 cliamp
 cups
 cups-browsed
@@ -25,7 +22,6 @@ docker
 docker-buildx
 docker-compose
 dosfstools
-dotnet-runtime-9.0
 dust
 evince
 exfatprogs
@@ -64,7 +60,6 @@ inetutils
 inxi
 iwd
 jq
-kdenlive
 kernel-modules-hook
 kvantum-qt5
 lazydocker
@@ -73,7 +68,6 @@ less
 libsecret
 libyaml
 libqalculate
-libreoffice-fresh
 llvm
 localsend
 luarocks
@@ -86,11 +80,9 @@ nautilus
 nautilus-python
 gnome-disk-utility
 noto-fonts
-noto-fonts-cjk
 noto-fonts-emoji
 nss-mdns
 nvim
-obs-studio
 obsidian
 omarchy-nvim
 omarchy-walker
@@ -130,7 +122,6 @@ tmux
 tobi-try
 ttf-ia-writer
 ttf-jetbrains-mono-nerd
-typora
 tzupdate
 ufw
 ufw-docker
