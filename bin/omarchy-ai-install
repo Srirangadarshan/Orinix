@@ -11,6 +11,7 @@ MODEL="${OMARCHY_AI_MODEL:-gemma3:4b}"
 
 if gum confirm "Install Omarchy AI Assistant? This will install Ollama and pull the ${MODEL} model (~2.6GB)."; then
   omarchy-pkg-add ollama
+  omarchy-pkg-add python-numpy
 
   systemctl --user enable --now ollama.service 2>/dev/null || true
 

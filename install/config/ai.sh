@@ -6,6 +6,10 @@ if omarchy-pkg-missing ollama; then
   omarchy-pkg-add ollama
 fi
 
+if omarchy-pkg-missing python-numpy; then
+  omarchy-pkg-add python-numpy
+fi
+
 systemctl --user enable ollama.service 2>/dev/null || true
 
 mkdir -p ~/.config/omarchy/ai

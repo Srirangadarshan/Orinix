@@ -44,7 +44,8 @@ def build_tool_definitions() -> list[dict]:
     )
     if result.returncode != 0:
       return _builtin_tools()
-    commands = json.loads(result.stdout)
+    raw = json.loads(result.stdout)
+    commands = raw if isinstance(raw, list) else raw.get("commands", [])
   except Exception:
     return _builtin_tools()
 
@@ -80,7 +81,16 @@ def build_tool_definitions() -> list[dict]:
       },
     })
 
-  return tools[:80]
+  builtin = _builtin_tools()
+  for bt in builtin:
+    name = bt.get("function", bt).get("name", "")
+    if not any(t.get("function", t).get("name") == name for t in tools):
+      tools.append(bt)
+
+  critical = {"omarchy_search_files", "omarchy_query_notes"}
+  critical_tools = [t for t in tools if t.get("function", t).get("name") in critical]
+  rest = [t for t in tools if t.get("function", t).get("name") not in critical]
+  return (critical_tools + rest)[:80]
 
 
 def _builtin_tools() -> list[dict]:

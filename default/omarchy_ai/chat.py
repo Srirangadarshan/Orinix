@@ -128,8 +128,12 @@ def run_chat(config: dict):
 
   if not adapter.is_available():
     print(f"\033[31mCannot connect to {adapter.get_name()}.\033[0m")
-    print(f"\033[33mMake sure Ollama is running: systemctl --user start ollama\033[0m")
-    print(f"\033[33mOr install with: omarchy-ai-install\033[0m")
+    backend_name = config.get("llm", {}).get("backend", "ollama")
+    if backend_name == "ollama":
+      print(f"\033[33mMake sure Ollama is running: systemctl --user start ollama\033[0m")
+      print(f"\033[33mOr install with: omarchy-ai-install\033[0m")
+    else:
+      print(f"\033[33mCheck your API key and endpoint in ~/.config/omarchy/ai/config.toml\033[0m")
     sys.exit(1)
 
   context = collect_all()
