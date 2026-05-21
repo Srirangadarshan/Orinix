@@ -1,0 +1,7 @@
+#!/bin/bash
+# omarchy:summary=Open the AI assistant configuration file
+# omarchy:group=ai
+
+set -e
+
+exec omarchy-launch-editor "$HOME/.config/omarchy/ai/config.toml"

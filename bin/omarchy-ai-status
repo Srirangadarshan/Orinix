@@ -1,0 +1,24 @@
+#!/bin/bash
+# omarchy:summary=Show AI assistant status for Waybar
+# omarchy:group=ai
+# omarchy:hidden=true
+
+set -e
+
+if omarchy-cmd-missing ollama; then
+  echo '{"text": "", "alt": "unavailable", "tooltip": "AI: not installed"}'
+  exit 0
+fi
+
+if ! systemctl --user is-active ollama.service &>/dev/null; then
+  echo '{"text": "󰭻", "alt": "stopped", "tooltip": "AI: Ollama not running"}'
+  exit 0
+fi
+
+MODEL="$(grep -E "^model" "$HOME/.config/omarchy/ai/config.toml" 2>/dev/null | sed 's/model = //' | tr -d '"' || echo "unknown")"
+
+if curl -sf http://localhost:11434/api/tags >/dev/null 2>&1; then
+  echo "{\"text\": \"󰭻\", \"alt\": \"ready\", \"tooltip\": \"AI: ${MODEL}\"}"
+else
+  echo '{"text": "󰭻", "alt": "loading", "tooltip": "AI: model loading..."}'
+fi

@@ -25,8 +25,10 @@ declare -A ROUTE_TO_KEY
 declare -A ROUTE_IS_ALIAS
 declare -A BINARY_TO_KEY
 declare -A GROUP_DESCRIPTIONS
-
 GROUP_DESCRIPTIONS[ac]="AC power detection"
+
+GROUP_DESCRIPTIONS[ai]="AI system assistant"
+
 GROUP_DESCRIPTIONS[battery]="Battery status helpers"
 GROUP_DESCRIPTIONS[branch]="Omarchy git branch management"
 GROUP_DESCRIPTIONS[branding]="About and screensaver branding"

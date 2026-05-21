@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+# omarchy:summary=Open the AI system assistant chat
+# omarchy:group=ai
+# omarchy:args=[question]
+# omarchy:examples=omarchy ai | omarchy ai chat | omarchy ai "install signal"
+# omarchy:alias=omarchy ai
+
+
+import sys
+import os
+
+OMARCHY_PATH = os.environ.get(
+  "OMARCHY_PATH",
+  os.path.expanduser("~/.local/share/omarchy"),
+)
+
+sys.path.insert(0, os.path.join(OMARCHY_PATH, "default"))
+
+from omarchy_ai.chat import load_config, run_chat
+
+if __name__ == "__main__":
+  config = load_config()
+
+  if len(sys.argv) > 1 and sys.argv[1] not in ("chat", "--chat"):
+    question = " ".join(sys.argv[1:])
+    from omarchy_ai.chat import create_adapter
+    from omarchy_ai.context import collect_all, format_system_prompt
+    from omarchy_ai.tools import build_tool_definitions
+    from omarchy_ai.permissions import check_permission, log_action
+
+    adapter = create_adapter(config)
+    if not adapter.is_available():
+      print("AI backend not available.")
+      sys.exit(1)
+
+    context = collect_all()
+    tool_definitions = build_tool_definitions()
+    system_prompt = format_system_prompt(context, tool_definitions)
+    messages = [{"role": "user", "content": question}]
+    session_allowed = set()
+
+    response = adapter.chat(
+      messages=messages,
+      tools=tool_definitions if len(tool_definitions) > 0 else None,
+      system_prompt=system_prompt,
+    )
+
+    if response.content:
+      print(response.content)
+
+    for tc in response.tool_calls:
+      from omarchy_ai.tools import get_tool_category, execute_tool
+      category = get_tool_category(tc.name, tool_definitions)
+      approved, _ = check_permission(tc.name, tc.arguments, category, "", session_allowed)
+      if approved:
+        success, result = execute_tool(tc.name, tc.arguments)
+        print(f"  → {result[:200]}")
+        log_action("execute", tc.name, tc.arguments, result, True)
+  else:
+    run_chat(config)

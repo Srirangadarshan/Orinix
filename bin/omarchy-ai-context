@@ -1,0 +1,17 @@
+#!/bin/bash
+# omarchy:summary=Show the current system context for the AI assistant
+# omarchy:group=ai
+# omarchy:hidden=true
+
+set -e
+
+OMARCHY_PATH="${OMARCHY_PATH:-$HOME/.local/share/omarchy}"
+
+exec python3 -c "
+import sys, os
+sys.path.insert(0, os.path.expanduser('${OMARCHY_PATH}/default'))
+from omarchy_ai.context import collect_all
+import json
+ctx = collect_all()
+print(json.dumps(ctx, indent=2))
+"

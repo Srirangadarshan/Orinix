@@ -28,6 +28,9 @@ o.bind("SUPER + SHIFT + S", "Google Maps", { webapp = "https://maps.google.com/"
 o.bind("SUPER + SHIFT + X", "X", { webapp = "https://x.com/" })
 o.bind("SUPER + SHIFT + ALT + X", "X Post", { webapp = "https://x.com/compose/post" })
 
+-- AI assistant.
+o.bind("SUPER + SEMICOLON", "AI Assistant", { tui = "omarchy-ai-chat" })
+
 -- Add extra bindings below.
 -- o.bind("SUPER + SHIFT + R", "SSH", "alacritty -e ssh your-server")
 

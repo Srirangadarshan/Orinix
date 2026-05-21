@@ -1,0 +1,30 @@
+#!/bin/bash
+# omarchy:summary=Remove the AI assistant and its configuration
+# omarchy:group=ai
+# omarchy:requires-sudo=true
+
+set -e
+
+if omarchy-cmd-present ollama; then
+  echo "Removing AI assistant..."
+
+  systemctl --user stop ollama.service 2>/dev/null || true
+  systemctl --user disable ollama.service 2>/dev/null || true
+
+  omarchy-pkg-drop ollama 2>/dev/null || true
+
+  if gum confirm "Remove downloaded AI models (~2.6GB)?"; then
+    rm -rf ~/.ollama
+    rm -rf ~/.local/share/ollama
+  fi
+
+  rm -rf ~/.config/omarchy/ai
+  rm -rf ~/.local/share/omarchy/ai/index
+  rm -f ~/.local/state/omarchy/ai-audit.log
+
+  omarchy-restart-waybar
+
+  echo "AI assistant removed."
+else
+  echo "AI assistant was not installed."
+fi

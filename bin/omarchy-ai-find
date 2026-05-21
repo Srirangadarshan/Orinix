@@ -1,0 +1,84 @@
+#!/usr/bin/env python3
+# omarchy:summary=Search files by natural language
+# omarchy:group=ai
+# omarchy:args=<query>
+# omarchy:examples=omarchy ai find "budget spreadsheet" | omarchy ai find
+# omarchy:alias=omarchy ai find
+
+
+import sys
+import os
+
+OMARCHY_PATH = os.environ.get(
+  "OMARCHY_PATH",
+  os.path.expanduser("~/.local/share/omarchy"),
+)
+
+sys.path.insert(0, os.path.join(OMARCHY_PATH, "default"))
+
+from omarchy_ai.index.search import find, query_notes, format_search_results, format_note_results, index_exists
+
+
+def main():
+  args = sys.argv[1:]
+
+  notes_mode = "--notes" in args
+  json_mode = "--json" in args
+  args = [a for a in args if not a.startswith("--")]
+
+  if not args:
+    if index_exists():
+      print("Usage: omarchy ai find <query>")
+      print("       omarchy ai find --notes <query>")
+    else:
+      print("No file index found. Indexing default directories first...")
+      from omarchy_ai.index.indexer import index_all_defaults
+      index_all_defaults(verbose=True)
+      print("\nSearch again with: omarchy ai find <query>")
+    sys.exit(0)
+
+  query = " ".join(args)
+
+  if not index_exists():
+    print("No index found. Indexing default directories first...")
+    from omarchy_ai.index.indexer import index_all_defaults
+    index_all_defaults(verbose=True)
+
+  try:
+    if notes_mode:
+      results = query_notes(query)
+      output = format_note_results(results) if not json_mode else _json_notes(results)
+    else:
+      results = find(query)
+      output = format_search_results(results) if not json_mode else _json_files(results)
+  except Exception as e:
+    print(f"Search failed: {e}")
+    sys.exit(1)
+
+  if output:
+    print(output)
+  else:
+    print("No results found.")
+
+
+def _json_files(results):
+  import json
+  seen = set()
+  items = []
+  for path, score, _text, _idx in results:
+    if path not in seen:
+      seen.add(path)
+      items.append({"path": path, "score": round(score, 3)})
+  return json.dumps(items, indent=2)
+
+
+def _json_notes(results):
+  import json
+  return json.dumps([
+    {"path": p, "score": round(s, 3), "text": t[:200]}
+    for p, s, t, _ in results
+  ], indent=2)
+
+
+if __name__ == "__main__":
+  main()

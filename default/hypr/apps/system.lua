@@ -4,6 +4,15 @@ o.window("(org.omarchy.bluetui|org.omarchy.impala|org.omarchy.wiremix|org.omarch
 o.window({ class = "(xdg-desktop-portal-gtk|sublime_text|DesktopEditors|org.gnome.Nautilus)", title = "^(Open.*Files?|Open [F|f]older.*|Save.*Files?|Save.*As|Save|All Files|.*wants to [open|save].*|[C|c]hoose.*)" }, { tag = "+floating-window" })
 o.window("org.gnome.Calculator", { float = true })
 
+-- AI assistant chat: floating, centered, sized, pinned above other windows.
+o.window("org.omarchy.omarchy-ai-chat", {
+  float = true,
+  center = true,
+  size = { 800, 600 },
+  pin = true,
+  opacity = "0.95 0.95",
+})
+
 -- Screen saver should always cover the screen and not be tiled.
 o.window("org.omarchy.screensaver", { fullscreen = true, float = true, animation = "slide" })
 

@@ -1,0 +1,62 @@
+#!/bin/bash
+# omarchy:summary=Manage the AI model (show, list, switch)
+# omarchy:group=ai
+# omarchy:args=[list|show|<model-name>]
+# omarchy:examples=omarchy ai model | omarchy ai model list | omarchy ai model qwen2.5:7b
+
+set -e
+
+OMARCHY_PATH="${OMARCHY_PATH:-$HOME/.local/share/omarchy}"
+CONFIG_FILE="$HOME/.config/omarchy/ai/config.toml"
+
+show_current() {
+  if [[ -f $CONFIG_FILE ]]; then
+    grep -E "^model" "$CONFIG_FILE" | head -1 | sed 's/model = //' | tr -d '"'
+  else
+    echo "gemma3:4b"
+  fi
+}
+
+list_models() {
+  echo "Recommended models for Omarchy AI:"
+  echo ""
+  printf "  %-25s %-10s %-15s\n" "MODEL" "SIZE" "REQUIRES"
+  printf "  %-25s %-10s %-15s\n" "---" "---" "---"
+  printf "  %-25s %-10s %-15s\n" "gemma3:4b" "~2.6GB" "4GB RAM"
+  printf "  %-25s %-10s %-15s\n" "llama3.2:3b" "~2.0GB" "4GB RAM"
+  printf "  %-25s %-10s %-15s\n" "qwen2.5:7b" "~4.5GB" "8GB RAM"
+  printf "  %-25s %-10s %-15s\n" "qwen2.5:14b" "~9GB" "16GB RAM"
+  printf "  %-25s %-10s %-15s\n" "qwen3.6:27b" "~18GB" "24GB RAM"
+
+  if omarchy-cmd-present ollama; then
+    echo ""
+    echo "Downloaded models:"
+    ollama list 2>/dev/null || echo "  (none)"
+  fi
+}
+
+switch_model() {
+  local model="$1"
+  if ! omarchy-cmd-present ollama; then
+    echo "Ollama is not installed. Run: omarchy-ai-install"
+    exit 1
+  fi
+
+  echo "Pulling model ${model}..."
+  ollama pull "$model"
+
+  if [[ -f $CONFIG_FILE ]]; then
+    sed -i "s/^model = .*/model = \"${model}\"/" "$CONFIG_FILE"
+  fi
+
+  echo "Switched to ${model}. Restart AI chat to use the new model."
+}
+
+case "${1:-show}" in
+  show|current)
+    show_current ;;
+  list|ls)
+    list_models ;;
+  *)
+    switch_model "$1" ;;
+esac

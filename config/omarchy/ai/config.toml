@@ -1,0 +1,39 @@
+# Omarchy AI Assistant Configuration
+#
+# Backend: ollama (default/local) | openai | anthropic
+# To switch backends, change the backend value and configure the
+# corresponding section below.
+
+[llm]
+backend = "ollama"
+
+[llm.ollama]
+model = "gemma3:4b"
+host = "http://localhost:11434"
+
+[llm.openai]
+model = "gpt-4o"
+api_key = ""
+api_base = "https://api.openai.com/v1"
+
+[llm.anthropic]
+model = "claude-sonnet-4-20250514"
+api_key = ""
+
+[index]
+embedding_model = "mxbai-embed-large"
+directories = ["~/Documents", "~/Downloads", "~/notes", "~/Desktop"]
+# To add more folders, edit this list or run: omarchy ai index --add ~/Projects
+notes_dir = "~/notes"
+max_file_size = 10485760
+include_extensions = [
+  ".md", ".txt", ".pdf", ".docx", ".xlsx", ".pptx",
+  ".py", ".sh", ".js", ".ts", ".rs", ".go", ".rb", ".php",
+  ".c", ".h", ".cpp", ".hpp", ".java",
+  ".json", ".toml", ".yaml", ".yml", ".conf", ".ini", ".csv", ".log",
+  ".html", ".css", ".xml",
+]
+
+[safety]
+permission_mode = "ask"
+log_audit = true
